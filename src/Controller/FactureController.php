@@ -310,57 +310,115 @@ class FactureController extends AbstractController
     public function delete(Facture $facture,EntityManagerInterface $entityManager, FactureRepository $repository)
     {
         $produit = $facture->getProduit()->first();
-            if ($produit){
-                $p = $entityManager->getRepository(Produit::class)->find($produit);
 
-                $vendus = $p->getNbreVendu();
-                $nombre = $facture->getNombre();
+        if ($produit){
+            $p = $entityManager->getRepository(Produit::class)->find($produit);
 
-                if ($facture->getNomProduit() == $p->getNomProduitDetail()){
-                    $repository->remove($facture);
-                    $quantite = floatval($facture->getQuantite());
-                    if ($quantite >= $nombre) {
-                        $boxe = $quantite / $nombre;
-                        $vendus = $boxe;
-                        $dstock = $p->getQtStock() + $vendus;
-                        $p->setQtStock($dstock);
-                        $p->setNbreVendu($vendus);
-                    }else{
-                        $boxe = $quantite / $nombre;
-                        $vendus = $boxe;
-                        $dstock = $p->getQtStock() + $vendus;
-                        $p->setQtStock($dstock);
-                        $p->setNbreVendu($vendus);
-                    }
+            $vendus = $p->getNbreVendu();
+            $nombre = $facture->getNombre();
 
-                    //Mise à jour du quantité Stock détail de la produit
-                    $upd = $p->getNombre() * $p->getQtStock();
-                    $p->setQtStockDetail($upd);
+            if ($facture->getNomProduit() == $p->getNomProduitDetail()){
+                $repository->remove($facture);
+                $quantite = floatval($facture->getQuantite());
+                if ($quantite >= $nombre) {
+                    $boxe = $nombre != 0 ? $quantite / $nombre : null; // ou une autre valeur pertinente
+                    $vendus = $boxe;
+                    $dstock = $p->getQtStock() + $vendus;
+                    $p->setQtStock($dstock);
+                    $p->setNbreVendu($vendus);
+                }else{
+                    $boxe = $nombre != 0 ? $quantite / $nombre : null; // ou une autre valeur pertinente
+                    $vendus = $boxe;
+                    $dstock = $p->getQtStock() + $vendus;
+                    $p->setQtStock($dstock);
+                    $p->setNbreVendu($vendus);
+                }
 
-                    //Mise à jour du total
-                    $upddd = $p->getQtStock() * $p->getPrixUnit();
-                    $p->setTotal($upddd);
+                //Mise à jour du quantité Stock détail de la produit
+                $upd = $p->getNombre() * $p->getQtStock();
+                $p->setQtStockDetail($upd);
 
-                    $this->addFlash('success', $produit->getNomProduitDetail().' a ete supprimée avec succès.');
-                    $entityManager->flush();
-                } else
-                    {
+                //Mise à jour du total
+                $upddd = $p->getQtStock() * $p->getPrixUnit();
+                $p->setTotal($upddd);
 
-                        $repository->remove($facture); // Mise à jour de l'état de la facture
+                $this->addFlash('success', $produit->getNomProduitDetail().' a ete supprimée avec succès.');
+                $entityManager->flush();
+            } else
+            {
 
-                        //Mise à jour quantité stock produit et total produit
-                        $quantite = $facture->getQuantite();
-                        $p->setQtStock($p->getQtStock() + $quantite);
-                        $updProd = $p->getQtStock() * $p->getPrixUnit();
-                        if ($p->getNombre() != null){
-                            $p->setQtStockDetail($p->getNombre() * $p->getQtStock());
-                        }                        $p->setTotal($updProd);
-                        $this->addFlash('success', $produit->getLibelle().' a ete supprimée avec succès.');
-                        $entityManager->flush();
-                    }
+                $repository->remove($facture); // Mise à jour de l'état de la facture
 
-                return $this->redirectToRoute('facture_liste');
+                //Mise à jour quantité stock produit et total produit
+                $quantite = $facture->getQuantite();
+                $p->setQtStock($p->getQtStock() + $quantite);
+                $updProd = $p->getQtStock() * $p->getPrixUnit();
+                if ($p->getNombre() != null){
+                    $p->setQtStockDetail($p->getNombre() * $p->getQtStock());
+                }                        $p->setTotal($updProd);
+                $this->addFlash('success', $produit->getLibelle().' a ete supprimée avec succès.');
+                $entityManager->flush();
             }
+
+            return $this->redirectToRoute('facture_liste');
+        }else{
+
+            $nomProd = $facture->getNomProduit();
+            $p = $entityManager->getRepository(Produit::class)->findBy(['libelle' => $nomProd]);
+
+
+
+            if (empty($p)) {
+
+                $p = $entityManager->getRepository(Produit::class)->findBy(['nomProduitDetail' => $nomProd]);
+
+                $vendus = $p[0]->getNbreVendu();
+                $nombre = $facture->getNombre();
+                $repository->remove($facture);
+                $quantite = floatval($facture->getQuantite());
+                if ($quantite >= $nombre) {
+                    $boxe = $nombre != 0 ? $quantite / $nombre : null; // ou une autre valeur pertinente
+                    $vendus = $boxe;
+                    $dstock = $p[0]->getQtStock() + $vendus;
+                    $p[0]->setQtStock($dstock);
+                    $p[0]->setNbreVendu($vendus);
+                } else {
+                    $boxe = $nombre != 0 ? $quantite / $nombre : null; // ou une autre valeur pertinente
+                    $vendus = $boxe;
+                    $dstock = $p[0]->getQtStock() + $vendus;
+                    $p[0]->setQtStock($dstock);
+                    $p[0]->setNbreVendu($vendus);
+                }
+
+                //Mise à jour du quantité Stock détail de la produit
+                $upd = $p[0]->getNombre() * $p[0]->getQtStock();
+                $p[0]->setQtStockDetail($upd);
+
+                //Mise à jour du total
+                $upddd = $p[0]->getQtStock() * $p[0]->getPrixUnit();
+                $p[0]->setTotal($upddd);
+
+                $this->addFlash('success', 'Le produit a ete supprimée avec succès.');
+                $entityManager->flush();
+            } else {
+
+                $repository->remove($facture); // Mise à jour de l'état de la facture
+
+                //Mise à jour quantité stock produit et total produit
+                $quantite = $facture->getQuantite();
+                $p[0]->setQtStock($p[0]->getQtStock() + $quantite);
+                $updProd = $p[0]->getQtStock() * $p[0]->getPrixUnit();
+                if ($p[0]->getNombre() != null) {
+                    $p[0]->setQtStockDetail($p[0]->getNombre() * $p[0]->getQtStock());
+                }
+                $p[0]->setTotal($updProd);
+                $this->addFlash('success','Le produit a ete supprimée avec succès.');
+                $entityManager->flush();
+            }
+
+            return $this->redirectToRoute('facture_liste');
+
+        }
         $this->addFlash('error', 'Erreur lors de la suppression de la facture.');
         return $this->redirectToRoute('facture_liste');
     }
@@ -380,15 +438,29 @@ class FactureController extends AbstractController
 
         if (!empty($factures)) {
             $firstFacture = end($factures);
+            $endFacture = reset($factures);
             if ($firstFacture->getClient() !== null) {
                 $nom = $firstFacture->getNomClient();
                 $adresse = $firstFacture->getClient()->getAdresse();
                 $telephone = $firstFacture->getClient()->getTelephone();
-            } else {
-                $endFacture = reset($factures);
+            } elseif ($endFacture->getClient() !== null) {
                 $nom = $endFacture->getNomClient();
                 $adresse = $endFacture->getClient()->getAdresse();
                 $telephone = $endFacture->getClient()->getTelephone();
+            } else {
+                $repository = $entityManager->getRepository(Facture::class);
+
+                $queryBuilder = $repository->createQueryBuilder('f')
+                    ->where('f.etat = :etat')
+                    ->andWhere('f.nomClient IS NOT NULL')
+                    ->setParameter('etat', 1)
+                    ->orderBy('f.date', 'DESC');
+
+                $factu = $queryBuilder->getQuery()->getResult();
+                $nom = $factu[0]->getNomClient();
+                $adresse = $factu[0]->getClient()->getAdresse();
+                $telephone = $factu[0]->getClient()->getTelephone();
+
             }
         }
 

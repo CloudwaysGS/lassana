@@ -140,9 +140,10 @@ class ChargementController extends AbstractController
 
                 $total += $facture->getMontant();
             }
+
             $reste = $chargement->getReste();
             $avance = $chargement->getAvance();
-
+            $depot = $chargement->getDepot();
 
         } else {
 
@@ -168,6 +169,10 @@ class ChargementController extends AbstractController
 
                 $total += $facture->getMontant();
             }
+
+            $reste = $chargement->getReste();
+            $avance = $chargement->getAvance();
+            $depot = $chargement->getDepot();
         }
 
         $data[] = [
@@ -211,6 +216,7 @@ class ChargementController extends AbstractController
         $pdf->Cell(120, 5, 'TELEPHONE : '. ($client ? $client->getTelephone() : ''), 0, 1, 'R');
 
         $pdf->Cell(70, 5, 'NINEA : 0848942 - RC : 10028', 0, 0, 'L');
+
         $date = $facture->getDate();
 
         if ($date !== null) {
@@ -253,14 +259,19 @@ class ChargementController extends AbstractController
 
         // Affichage de l'avance si elle n'est pas nulle
         if ($avance !== null) {
-            $pdf->Cell(14.5, 30, 'Acompte', 0, 0, 'L', false);
+            $pdf->Cell(14.5, 30, 'Avance:', 0, 0, 'L', false);
             $pdf->Cell(30.5, 30, utf8_decode($avance . ' '), 0, 1, 'C', false);
         }
 
         // Affichage du reste si il n'est pas nul
         if ($reste !== null) {
-            $pdf->Cell(14.5, -15, 'Reste', 0, 0, 'L', false);
+            $pdf->Cell(14.5, -15, 'Reste:', 0, 0, 'L', false);
             $pdf->Cell(30.5, -15, utf8_decode($reste . ' '), 0, 1, 'C', false);
+        }
+
+        if ($depot !== null) {
+            $pdf->Cell(14.5, -15, 'Depot:', 0, 0, 'L', false);
+            $pdf->Cell(30.5, -15, utf8_decode($depot . ' '), 0, 1, 'C', false);
         }
 
 
@@ -340,11 +351,10 @@ class ChargementController extends AbstractController
     #[Route('/chargement/retour/{id}', name: 'retour')]
     public function retour(Chargement $chargement, EntityManagerInterface $entityManager)
     {
-
         $verifierFacture1 = $entityManager->getRepository(Facture::class)->findBy(['etat' => 1]);
         $verifierFacture2 = $entityManager->getRepository(Facture2::class)->findBy(['etat' => 1]);
-        if (empty($verifierFacture1)) {
 
+        if (empty($verifierFacture1)) {
             $nomProduit = $chargement->getFacture()->toArray();
 
             foreach ($nomProduit as $fac) {
@@ -365,8 +375,13 @@ class ChargementController extends AbstractController
                 $facture->setConnect($connect);
                 $facture->setClient($client);
                 $facture->setNomClient($nomClient);
+
                 $entityManager->persist($facture);
             }
+            $entityManager->flush();
+
+            return $this->redirectToRoute('facture_liste');
+
         } elseif (empty($verifierFacture2)) {
             $nomProduit = $chargement->getFacture()->toArray();
 
@@ -378,22 +393,32 @@ class ChargementController extends AbstractController
                 $montant = $fac->getMontant();
                 $prixUnit = $fac->getPrixUnit();
                 $connect = $fac->getConnect();
+                $client = $fac->getClient();
+                $nomClient = $fac->getNomClient();
 
                 $facture->setNomProduit($nomProd);
                 $facture->setQuantite($qte);
                 $facture->setPrixUnit($prixUnit);
                 $facture->setMontant($montant);
                 $facture->setConnect($connect);
+                $facture->setClient($client);
+                $facture->setNomClient($nomClient);
 
                 $entityManager->persist($facture);
+
             }
+
+            // Flush une seule fois après la boucle
+            $entityManager->flush();
+
+            return $this->redirectToRoute('facture2_liste');
+
         } else {
             $this->addFlash('danger', 'Facture1 et Facture2 sont occupées.');
             return $this->redirectToRoute('liste_chargement');
         }
 
-        $entityManager->flush();
-        return $this->redirectToRoute('facture_liste');
+
     }
 
     #[Route('/chargement/payer/{id}', name: 'payer')]
