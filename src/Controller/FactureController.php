@@ -39,6 +39,8 @@ class FactureController extends AbstractController
 
         // Récupération de toutes les factures
         $factures = $fac->findAllOrderedByDate();
+        $nbre = count($factures);
+        $somme = $this->factureService->updateTotalForFactures();
 
         $search = new Search();
         $nom = $search->getNom();
@@ -52,6 +54,8 @@ class FactureController extends AbstractController
             'details' => $details,
             'facture' => $factures,
             'clients' => $clients,
+            'nbre' => $nbre,
+            'somme' => $somme
         ]);
     }
 
@@ -147,7 +151,8 @@ class FactureController extends AbstractController
                         $nouvelleNombreVendu = abs($differenceQuantite) / $nombre;
                     } elseif ($differenceQuantite == 0) {
 
-                        // Nouvelle quantité est égale à l'ancienne
+                        $total = $this->factureService->updateTotalForFactures();
+                        $facture->setTotal($total);                        // Nouvelle quantité est égale à l'ancienne
                         $entityManager->flush();
                         return $this->redirectToRoute('facture_liste');
                     }
@@ -222,6 +227,8 @@ class FactureController extends AbstractController
                     $nouvelleQuantiteStock = $quantiteStockActuelle + abs($differenceQuantite);
                 } elseif ($differenceQuantite == 0) {
 
+                    $total = $this->factureService->updateTotalForFactures();
+                    $facture->setTotal($total);
                     // Nouvelle quantité est égale à l'ancienne
                     $entityManager->flush();
                     return $this->redirectToRoute('facture_liste');
@@ -270,6 +277,8 @@ class FactureController extends AbstractController
                     $nouvelleNombreVendu = abs($differenceQuantite) / $nombre;
                 } elseif ($differenceQuantite == 0) {
 
+                    $total = $this->factureService->updateTotalForFactures();
+                    $facture->setTotal($total);
                     // Nouvelle quantité est égale à l'ancienne
                     $entityManager->flush();
                     return $this->redirectToRoute('facture_liste');

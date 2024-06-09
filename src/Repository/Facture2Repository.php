@@ -48,6 +48,14 @@ class Facture2Repository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function countAll(): int
+    {
+        $qb = $this->createQueryBuilder('f');
+        $qb->select('COUNT(f)');
+        $query = $qb->getQuery();
+        return $query->getSingleScalarResult();
+    }
 //    /**
 //     * @return Facture2[] Returns an array of Facture2 objects
 //     */

@@ -5,6 +5,8 @@ namespace App\Entity;
     {
         private $nom;
 
+        private $numeroFacture;
+
         /**
          * @return mixed
          */
@@ -19,5 +21,21 @@ namespace App\Entity;
         public function setNom($nom): void
         {
             $this->nom = $nom;
+        }
+
+        /**
+         * @return mixed
+         */
+        public function getNumeroFacture()
+        {
+            return $this->numeroFacture;
+        }
+
+        /**
+         * @param mixed $numeroFacture
+         */
+        public function setNumeroFacture($numeroFacture): void
+        {
+            $this->numeroFacture = $numeroFacture;
         }
     }

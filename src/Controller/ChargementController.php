@@ -37,7 +37,7 @@ class ChargementController extends AbstractController
         $pagination = $paginator->paginate(
             ($nom !== null && $nom !== '') ? $charge->findByName($nom) : $charge->findAllOrderedByDate(),
             $request->query->get('page', 1),
-            10
+            20
         );
         $f = null;
 
@@ -342,6 +342,13 @@ class ChargementController extends AbstractController
             } else {
                 $this->addFlash('danger', 'Client non trouvé.');
             }
+        }elseif($reste < 0){
+
+            $chargement->setDepot(abs($reste));
+            $chargement->setAvance($prixAvance);
+            $chargement->setStatut('payée');
+
+            $this->addFlash('success', 'Le client à un dépot de '.abs($reste));
         }
 
         $entityManager->flush();
@@ -351,6 +358,7 @@ class ChargementController extends AbstractController
     #[Route('/chargement/retour/{id}', name: 'retour')]
     public function retour(Chargement $chargement, EntityManagerInterface $entityManager)
     {
+
         $verifierFacture1 = $entityManager->getRepository(Facture::class)->findBy(['etat' => 1]);
         $verifierFacture2 = $entityManager->getRepository(Facture2::class)->findBy(['etat' => 1]);
 
@@ -383,7 +391,7 @@ class ChargementController extends AbstractController
             return $this->redirectToRoute('facture_liste');
 
         } elseif (empty($verifierFacture2)) {
-            $nomProduit = $chargement->getFacture()->toArray();
+            $nomProduit = $chargement->getFacture2s()->toArray();
 
             foreach ($nomProduit as $fac) {
                 $facture = new Facture2();

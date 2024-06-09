@@ -49,20 +49,19 @@ class ChargementRepository extends ServiceEntityRepository
 
     public function findByName($nom)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.nomClient LIKE :nomClient')
-            ->setParameter('nomClient', '%'.$nom.'%')
+        $results = $this->createQueryBuilder('c')
+            ->andWhere('c.nomClient LIKE :searchTerm OR c.numeroFacture LIKE :searchTerm')
+            ->setParameter('searchTerm', '%'.$nom.'%')
             ->orderBy('c.nomClient', 'ASC')
             ->getQuery()
             ->getResult();
-    }
 
-    public function countAll(): int
-    {
-        $qb = $this->createQueryBuilder('c');
-        $qb->select('COUNT(c)');
-        $query = $qb->getQuery();
-        return $query->getSingleScalarResult();
+        if ($results === false || empty($results)) {
+            // Gérer le cas où aucun résultat n'est trouvé
+            return []; // Ou vous pouvez lever une exception ou retourner null selon votre logique
+        }
+
+        return $results;
     }
 
     public function getTotalChargements(): float

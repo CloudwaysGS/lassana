@@ -21,6 +21,10 @@ class SearchType extends AbstractType
                     'placeholder' => 'Recherche...',
                 )
             ))
+            ->add('numeroFacture', TextType::class, [
+                'required' => false,
+                'label' => 'Numéro Facture',
+            ]);
         ;
     }
 
