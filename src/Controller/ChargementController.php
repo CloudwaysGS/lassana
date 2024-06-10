@@ -287,10 +287,6 @@ class ChargementController extends AbstractController
 
         $prixAvance = $request->request->get('price');
 
-
-
-
-
         $nomClient = $chargement->getNomClient();
         $client = $entityManager->getRepository(Client::class)->findOneBy(['nom' => $nomClient]);
 
@@ -313,9 +309,13 @@ class ChargementController extends AbstractController
 
             $entityManager->persist($chargement);
             $this->addFlash('success', 'Le règlement de la facture a été effectué.');
-        } elseif ($chargement->getAvance() != null){
+        }
+
+        elseif ($chargement->getAvance() != null){
             $this->addFlash('danger', 'Vous avez déjà effectué un acompte auparavant.');
-        } elseif ($reste > 0 && $reste < $chargement->getTotal()) {
+        }
+
+        elseif ($reste > 0 && $reste < $chargement->getTotal()) {
             $dette = new Dette();
             $date = new \DateTime();
             $dette->setMontantDette($reste);
@@ -350,7 +350,7 @@ class ChargementController extends AbstractController
 
             $this->addFlash('success', 'Le client à un dépot de '.abs($reste));
         }
-
+        dd("yes");
         $entityManager->flush();
         return $this->redirectToRoute('liste_chargement');
     }
@@ -468,7 +468,6 @@ class ChargementController extends AbstractController
     #[Route('/chargement/remboursement/{id}', name: 'remboursement')]
     public function rembourserDettes(Request $request, Chargement $chargement, EntityManagerInterface $entityManager)
     {
-
         $nomClient = $chargement->getNomClient();
         // Trouver le client
         $client = $entityManager->getRepository(Client::class)->findOneBy(['nom' => $nomClient]); // Remplacez $nomClient par le nom du client concerné
