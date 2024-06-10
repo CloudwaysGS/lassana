@@ -350,7 +350,6 @@ class ChargementController extends AbstractController
 
             $this->addFlash('success', 'Le client à un dépot de '.abs($reste));
         }
-        dd("yes");
         $entityManager->flush();
         return $this->redirectToRoute('liste_chargement');
     }
