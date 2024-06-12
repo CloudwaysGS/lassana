@@ -33,10 +33,8 @@ class AccueilController extends AbstractController
         $twentyFourHoursAgo->modify('-24 hours');
 
         // Total des produits achetés depuis minuit aujourd'hui (réinitialisation)
-        $sumTotal24H = $charge->createQueryBuilder('c')
+        $sumTotal = $charge->createQueryBuilder('c')
             ->select('COALESCE(SUM(c.total), 0)')
-            ->where('c.date >= :today')
-            ->setParameter('today', $currentDateTime)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -167,7 +165,7 @@ class AccueilController extends AbstractController
 
         return $this->render('accueil.html.twig', [
             'controller_name' => 'AccueilController',
-            'sumTotal24H' => $sumTotal24H,
+            'sumTotal' => $sumTotal,
             'entreetotal24H' => $entreetotal24H,
             'totalsByDate' => $totalsByDate,
             'currentPage' => $page,

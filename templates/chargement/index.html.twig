@@ -17,6 +17,18 @@
 	{% for message in app.session.flashBag.get('danger') %}
 		<div id="flash-message" class="alert alert-danger">{{ message }}</div>
 	{% endfor %}
+
+	<form name="search" method="post" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+		<div class="input-group">
+			<input type="text" id="search_nom" name="search[nom]" class="form-control bg-light border-0 small" placeholder="Rechercher..." aria-label="Search" aria-describedby="basic-addon2">
+			<div class="input-group-append">
+				<button class="btn btn-primary" type="submit">
+					<i class="fas fa-search fa-sm"></i>
+				</button>
+			</div>
+		</div>
+	</form>
+
 	<div class="container col-md-12">
 
 		<div class="card ">
