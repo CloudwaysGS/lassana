@@ -452,19 +452,6 @@ class ChargementController extends AbstractController
             $nomClient = $chargement->getNomClient();
             $client = $entityManager->getRepository(Client::class)->findOneBy(['nom' => $nomClient]);
 
-            if ($client) {
-                // Rechercher les dettes impayées du client
-                $dettes = $entityManager->getRepository(Dette::class)->findBy(['client' => $client, 'statut' => 'impayé']);
-
-                if (!empty($dettes)) {
-                    // Mettre à jour la première dette trouvée à "payée" et définir le reste à 0
-                    $dette = $dettes[0];
-                    $dette->setStatut('payée');
-                    $dette->setReste('0');
-                    $entityManager->persist($dette);
-                }
-            }
-
             // Enregistrer les modifications dans la base de données
             $entityManager->flush();
 
