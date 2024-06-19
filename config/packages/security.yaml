@@ -42,6 +42,7 @@ security:
     - { path: ^/chargement$, roles: [ROLE_GESTION_STOCK,ROLE_VENDEUR] }
     - { path: ^/chargement/extraire$, roles: [ROLE_GESTION_STOCK,ROLE_VENDEUR] }
     - { path: ^/chargement/pdf$, roles: [ROLE_GESTION_STOCK,ROLE_VENDEUR] }
+    - { path: ^/chargement/print, roles: [ROLE_GESTION_STOCK,ROLE_VENDEUR] }
     - { path: ^/dette, roles: [ROLE_GESTION_STOCK,ROLE_VENDEUR] }
     - { path: ^/paiement, roles: [ROLE_GESTION_STOCK,ROLE_VENDEUR] }
     - { path: ^/client, roles: [ROLE_GESTION_STOCK,ROLE_VENDEUR] }
