@@ -43,6 +43,9 @@ class Dette
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $commentaire = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $avance = null;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -194,5 +197,17 @@ class Dette
     public function setTag(?string $tag): void
     {
         $this->tag = $tag;
+    }
+
+    public function getAvance(): ?float
+    {
+        return $this->avance;
+    }
+
+    public function setAvance(?float $avance): self
+    {
+        $this->avance = $avance;
+
+        return $this;
     }
 }

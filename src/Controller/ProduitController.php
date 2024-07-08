@@ -44,7 +44,7 @@ class ProduitController extends AbstractController
         $pagination = $paginator->paginate(
             ($nom !== null && $nom !== '') ? $prod->findByName($nom) : $prod->findAllOrderedByDate(),
             $request->query->get('page', 1),
-            10
+            20
         );
         $notifier->success('Bonjour '.$this->getUser()->getPrenom().' '.$this->getUser()->getNom().' je vous souhaite une excellente journée!!!');
         return $this->render('produit/liste.html.twig', [

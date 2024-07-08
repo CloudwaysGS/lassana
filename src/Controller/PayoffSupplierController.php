@@ -18,6 +18,7 @@ class PayoffSupplierController extends AbstractController
     #[Route('/payoff/supplier', name: 'payoff_supplier_liste')]
     public function index(PayoffSupplierRepository $paiement, Request $request): Response
     {
+
         $p = new PayoffSupplier();
         $form = $this->createForm(PayoffSupplierType::class, $p, array(
             'action' => $this->generateUrl('payoff_supplier_add'),
@@ -58,6 +59,7 @@ class PayoffSupplierController extends AbstractController
 
         $client = $payment->getFournisseur();
         $currentDebt = $client->getDetteFounisseur()->last();
+
         $remainingDebt = (!$currentDebt || !method_exists($currentDebt, 'getReste')) ? null : $currentDebt->getReste();
         if (is_null($remainingDebt)) {
             $this->addFlash('danger','Aucune dette n\'a été trouvée pour ce fournisseur.');

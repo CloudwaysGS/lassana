@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -40,6 +41,16 @@ class DetteType extends AbstractType
                     ],
                 'constraints' => [
                     new NotBlank(['message' => 'Le montant de la dette ne peut pas être vide.']),
+                    new Type([
+                        'type' => 'numeric',
+                        'message' => 'Le montant de la dette doit être un nombre.'
+                    ])
+                ]
+            ))
+            ->add('avance', HiddenType::class, array(
+                'mapped' => false, // This ensures the field is not mapped to the entity
+                'constraints' => [
+                    //new NotBlank(['message' => 'Le montant de la dette ne peut pas être vide.']),
                     new Type([
                         'type' => 'numeric',
                         'message' => 'Le montant de la dette doit être un nombre.'

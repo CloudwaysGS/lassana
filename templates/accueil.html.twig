@@ -400,6 +400,8 @@
 																<th>Date</th>
 																<th>Somme Vendue
 																</th>
+																<th>Vente max</th>
+																<th>Vente min</th>
 
 															</tr>
 														</thead>
@@ -408,7 +410,8 @@
 																<tr>
 																	<td>{{ total.date }}</td>
 																	<td>{{ total.totalSold|number_format(2, ',', ' ') }}</td>
-
+																	<td>{{ total.maxSale }}</td>
+																	<td>{{ total.minSale }}</td>
 																</tr>
 															{% endfor %}
 														</tbody>

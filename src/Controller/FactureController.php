@@ -466,6 +466,10 @@ class FactureController extends AbstractController
                     ->orderBy('f.date', 'DESC');
 
                 $factu = $queryBuilder->getQuery()->getResult();
+                if(empty($factu)){
+                    $this->addFlash('danger','Ajouter un client pour enregistrer');
+                    return $this->redirectToRoute('facture_liste');
+                }
                 $nom = $factu[0]->getNomClient();
                 $adresse = $factu[0]->getClient()->getAdresse();
                 $telephone = $factu[0]->getClient()->getTelephone();
