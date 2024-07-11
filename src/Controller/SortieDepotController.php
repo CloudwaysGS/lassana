@@ -77,7 +77,7 @@ class SortieDepotController extends AbstractController
 
             $sortieDepotRepository->save($sortieDepot, true);
             $this->addFlash('success', 'La sortie a été enregistré avec succès.');
-            return $this->redirectToRoute('app_sortie_depot_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_sortie_depot_new', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('sortie_depot/new.html.twig', [

@@ -74,6 +74,9 @@ class Produit
     #[ORM\OneToMany(mappedBy: 'produit', targetEntity: SortieDepot::class)]
     private Collection $sortieDepots;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $prixRevient = null;
+
     public function __construct()
     {
         $this->entrees = new ArrayCollection();
@@ -428,6 +431,18 @@ class Produit
                 $sortieDepot->setProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPrixRevient(): ?float
+    {
+        return $this->prixRevient;
+    }
+
+    public function setPrixRevient(?float $prixRevient): self
+    {
+        $this->prixRevient = $prixRevient;
 
         return $this;
     }

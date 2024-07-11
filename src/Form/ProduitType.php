@@ -56,6 +56,17 @@ class ProduitType extends AbstractType
                     new Type('numeric')
                 )
             ))
+            ->add('prixRevient', TextType::class, array(
+                'label' => false,
+                'required' => false,
+                'attr' => array(
+                    'class' => 'form-control form-group',
+                    'placeholder' => 'prix achat',
+                ),
+                'constraints' => array(
+                    new Type('numeric')
+                )
+            ))
             ->add('createDetail', ChoiceType::class, array(
                 'label' => 'Souhaitez-vous créer les détails ?',
                 'expanded' => true,

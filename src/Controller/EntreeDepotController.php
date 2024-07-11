@@ -60,7 +60,7 @@ class EntreeDepotController extends AbstractController
             $entreeDepotRepository->save($entreeDepot, true);
             $this->addFlash('success', 'L\'entree a été enregistré avec succès.');
 
-            return $this->redirectToRoute('app_entree_depot_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_entree_depot_new', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('entree_depot/new.html.twig', [

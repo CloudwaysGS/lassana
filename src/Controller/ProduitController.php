@@ -21,7 +21,7 @@ class ProduitController extends AbstractController
 
 
     #[Route('/produit/liste', name: 'produit_liste')]
-    public function index(ProduitRepository $prod, Request $request, FlashyNotifier $notifier, PaginatorInterface $paginator): Response
+    public function index(ProduitRepository $prod, Request $request, PaginatorInterface $paginator): Response
     {
         $lastDayOfMonth = new \DateTime('last day of this month');
         $today = new \DateTime();
@@ -46,11 +46,19 @@ class ProduitController extends AbstractController
             $request->query->get('page', 1),
             20
         );
-        $notifier->success('Bonjour '.$this->getUser()->getPrenom().' '.$this->getUser()->getNom().' je vous souhaite une excellente journée!!!');
+
+        $total = 0;
+
+        foreach ($prod->findAllOrderedByDate() as $sommeRevient) {
+            $somme = $sommeRevient->getQtStock() * $sommeRevient->getPrixRevient();
+            $total += $somme;
+        }
+
         return $this->render('produit/liste.html.twig', [
             'controller_name' => 'ProduitController',
             'produits' => $produits,
             'pagination' => $pagination,
+            'total' => $total,
             'form' => $form->createView(),
             'form2' => $form2->createView(),
             'message' => $message
@@ -110,8 +118,17 @@ class ProduitController extends AbstractController
            $entityManager->flush();
             return $this->redirectToRoute("produit_liste");
         }
+
+        $total = 0;
+
+        foreach ($prod->findAllOrderedByDate() as $sommeRevient) {
+            $somme = $sommeRevient->getQtStock() * $sommeRevient->getPrixRevient();
+            $total += $somme;
+        }
+
         return $this->render('produit/liste.html.twig', [
             'pagination'=>$pagination,
+            'total' => $total,
             'form' => $form->createView(),
             'form2' => $form2->createView(),
             'message' => $message
