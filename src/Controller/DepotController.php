@@ -28,7 +28,14 @@ class DepotController extends AbstractController
             10
         );
 
+        $total = 0;
+        foreach ($depotRepository->findAllOrderedByDate() as $sommeRevient) {
+            $somme = $sommeRevient->getStock() * $sommeRevient->getPrixAchat();
+            $total += $somme;
+        }
+
         return $this->render('depot/index.html.twig', [
+            'total' => $total,
             'pagination' => $pagination,
             'searchTerm' => $searchTerm,
         ]);
@@ -82,8 +89,13 @@ class DepotController extends AbstractController
 
             return $this->redirectToRoute('app_depot_index', [], Response::HTTP_SEE_OTHER);
         }
-
+        $total = 0;
+        foreach ($depotRepository->findAllOrderedByDate() as $sommeRevient) {
+            $somme = $sommeRevient->getStock() * $sommeRevient->getPrixAchat();
+            $total += $somme;
+        }
         return $this->renderForm('depot/edit.html.twig', [
+            'total' => $total,
             'depot' => $depot,
             'form' => $form,
         ]);

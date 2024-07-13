@@ -34,6 +34,9 @@ class Depot
     #[ORM\OneToMany(mappedBy: 'depot', targetEntity: SortieDepot::class)]
     private Collection $sortieDepots;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $prixAchat = null;
+
     public function __construct()
     {
         $this->produit = new ArrayCollection();
@@ -189,6 +192,18 @@ class Depot
     {
         // TODO: Implement __toString() method.
         return $this->libelle;
+    }
+
+    public function getPrixAchat(): ?float
+    {
+        return $this->prixAchat;
+    }
+
+    public function setPrixAchat(?float $prixAchat): self
+    {
+        $this->prixAchat = $prixAchat;
+
+        return $this;
     }
 
 }

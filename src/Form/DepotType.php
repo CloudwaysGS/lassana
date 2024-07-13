@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Type;
 
 class DepotType extends AbstractType
 {
@@ -30,6 +31,17 @@ class DepotType extends AbstractType
                 'attr' => array(
                     'class' => 'form-control form-group',
                     'placeholder' => 'Quantité en stock'
+                )
+            ))
+            ->add('prixAchat', TextType::class, array(
+                'label' => false,
+                'required' => false,
+                'attr' => array(
+                    'class' => 'form-control form-group',
+                    'placeholder' => 'prix achat',
+                ),
+                'constraints' => array(
+                    new Type('numeric')
                 )
             ))
         ;
