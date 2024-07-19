@@ -116,7 +116,7 @@ class ProduitController extends AbstractController
             $form->getData()->setQtStockDetail($updateDetail);
             $entityManager->persist($form->getData());
            $entityManager->flush();
-            $this->addFlash('warning','Modifié avec succès');
+            $this->addFlash('success','Modifié avec succès');
             return $this->redirectToRoute("produit_liste");
         }
 
@@ -126,7 +126,7 @@ class ProduitController extends AbstractController
             $somme = $sommeRevient->getQtStock() * $sommeRevient->getPrixRevient();
             $total += $somme;
         }
-
+        $this->addFlash('warning','Modification');
         return $this->render('produit/liste.html.twig', [
             'pagination'=>$pagination,
             'total' => $total,
