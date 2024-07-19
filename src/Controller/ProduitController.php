@@ -27,11 +27,11 @@ class ProduitController extends AbstractController
         $today = new \DateTime();
         $remainingDays = $lastDayOfMonth->diff($today)->days;
         $message = ($remainingDays === 2) ? "Attention : Il ne reste que 2 jours avant la fin du mois en cours !" : (($remainingDays === 1) ? "Attention : Il ne reste plus que 1 jour avant la fin du mois en cours !" : "");
-        $produits = $prod->getLowStockProducts();
+        //$produits = $prod->getLowStockProducts();
 
-        foreach ($produits as $p){
-            $this->addFlash('danger', "La quantité en stock ".$p->getLibelle()." est en baisse: ".$p->getQtStock());
-        }
+        //foreach ($produits as $p){
+            //$this->addFlash('danger', "La quantité en stock ".$p->getLibelle()." est en baisse: ".$p->getQtStock());
+        //}
 
         $p = new Produit();
         $form = $this->createForm(ProduitType::class, $p, [
@@ -56,7 +56,7 @@ class ProduitController extends AbstractController
 
         return $this->render('produit/liste.html.twig', [
             'controller_name' => 'ProduitController',
-            'produits' => $produits,
+            //'produits' => $produits,
             'pagination' => $pagination,
             'total' => $total,
             'form' => $form->createView(),

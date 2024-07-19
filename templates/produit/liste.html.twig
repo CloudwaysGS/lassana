@@ -94,7 +94,12 @@
     <div class="row">
      <div class="container col-md-8">
 
-
+         {% for message in app.session.flashBag.get('success') %}
+             <div id="flash-message" class="alert alert-success">{{ message }}</div>
+         {% endfor %}
+         {% for message in app.session.flashBag.get('danger') %}
+             <div id="flash-message" class="alert alert-danger">{{ message }}</div>
+         {% endfor %}
          {% if message %}
              <div class="alert alert-warning" role="alert">
                  {{ message }}
