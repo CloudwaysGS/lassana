@@ -116,6 +116,7 @@ class ProduitController extends AbstractController
             $form->getData()->setQtStockDetail($updateDetail);
             $entityManager->persist($form->getData());
            $entityManager->flush();
+            $this->addFlash('warning','Modifié avec succès');
             return $this->redirectToRoute("produit_liste");
         }
 
